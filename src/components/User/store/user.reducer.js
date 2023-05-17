@@ -61,7 +61,9 @@ export default function userReducer(state = initialState, action) {
       return {
         ...state,
         users: state.users.map(user =>
-          user.id === action.payload ? {...user, score: user.score + 1} : user,
+          user.id === action.payload.userId
+            ? {...user, score: action.payload.score}
+            : user,
         ),
       };
     case 'RESET_USER_SCORE':

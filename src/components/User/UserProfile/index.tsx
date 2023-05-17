@@ -2,6 +2,7 @@ import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {globalStyles} from '../../../globalStyles';
 import {useSelector} from 'react-redux';
+import {quizQuestions} from '../../Quiz/questions';
 
 export default function UserProfile({navigation, route}: any) {
   const onTakeQuizPress = () => {
@@ -41,26 +42,28 @@ export default function UserProfile({navigation, route}: any) {
           <Text style={styles.detailHeader}>Gender</Text>
           <Text style={styles.detailValue}>{selectedUserDetails?.gender}</Text>
         </View>
-        <View style={styles.detail}>
-          <Text style={styles.detailHeader}>City</Text>
-          <Text style={styles.detailValue}>
-            {selectedUserDetails?.address.city}
-          </Text>
-        </View>
         {selectedUserDetails.status === 'passed' ||
         selectedUserDetails.status === 'failed' ? (
-          <View style={styles.detail}>
-            <Text style={styles.detailHeader}>Status</Text>
-            <Text
-              style={[
-                styles.detailValue,
-                selectedUserDetails.status === 'passed'
-                  ? styles.passed
-                  : styles.failed,
-              ]}>
-              {selectedUserDetails.status}
-            </Text>
-          </View>
+          <>
+            <View style={styles.detail}>
+              <Text style={styles.detailHeader}>Status</Text>
+              <Text
+                style={[
+                  styles.detailValue,
+                  selectedUserDetails.status === 'passed'
+                    ? styles.passed
+                    : styles.failed,
+                ]}>
+                {selectedUserDetails.status}
+              </Text>
+            </View>
+            <View style={styles.detail}>
+              <Text style={styles.detailHeader}>Previous Score</Text>
+              <Text style={styles.detailValue}>
+                {selectedUserDetails?.score} / {quizQuestions.length}
+              </Text>
+            </View>
+          </>
         ) : null}
         <View style={styles.detail}>
           <Text style={styles.detailHeader}>Number of attempts</Text>

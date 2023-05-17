@@ -44,7 +44,10 @@ export default function Question({
     (user: any) => user.id === selectedUser.userId,
   );
 
+  const [score, setScore] = useState(0);
+
   const onFinish = () => {
+    dispatch(updateUserScore({userId: selectedUser.userId, score}));
     const percentage = (selectedUserDetails.score / numberOfQuestions) * 100;
     if (percentage >= 70) {
       dispatch(moveUserToPassed(selectedUser.userId));
@@ -84,7 +87,7 @@ export default function Question({
           style={styles.nextButton}
           onPress={() => {
             if (selectedOption === answer) {
-              dispatch(updateUserScore(selectedUser.userId));
+              setScore(score + 1);
             }
             onNextQuestion();
           }}>

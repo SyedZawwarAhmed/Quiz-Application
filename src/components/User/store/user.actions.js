@@ -32,9 +32,9 @@ export const moveUserToFailed = userId => ({
   payload: userId,
 });
 
-export const updateUserScore = userId => ({
+export const updateUserScore = ({userId, score}) => ({
   type: 'UPDATE_USER_SCORE',
-  payload: userId,
+  payload: {userId, score},
 });
 
 export const resestUserScore = userId => ({
