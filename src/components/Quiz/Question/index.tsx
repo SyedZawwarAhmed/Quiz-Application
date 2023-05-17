@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Pressable,
+  Modal,
 } from 'react-native';
 import React, {useState} from 'react';
 import {globalStyles} from '../../../globalStyles';
@@ -15,6 +16,8 @@ import {
   updateUserScore,
 } from '../../User/store/user.actions';
 import {StackActions} from '@react-navigation/native';
+import {quizQuestions} from '../questions';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface QuestionProps {
   question: string;
@@ -48,17 +51,19 @@ export default function Question({
 
   const onFinish = () => {
     dispatch(updateUserScore({userId: selectedUser.userId, score}));
-    const percentage = (selectedUserDetails.score / numberOfQuestions) * 100;
+    const percentage = (score / numberOfQuestions) * 100;
     if (percentage >= 70) {
       dispatch(moveUserToPassed(selectedUser.userId));
     } else {
       dispatch(moveUserToFailed(selectedUser.userId));
     }
     dispatch(updateUserNumberOfAttempts(selectedUser.userId));
-    navigation.dispatch(popAction);
+    setModalVisible(true);
   };
 
   const [selectedOption, setSelectedOption] = useState('');
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -98,6 +103,45 @@ export default function Question({
           <Text style={styles.nextButtonText}>Finish</Text>
         </TouchableOpacity>
       )}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View>
+              <Icon
+                name={
+                  selectedUserDetails.status === 'passed' ? 'check' : 'times'
+                }
+                size={100}
+                color={
+                  selectedUserDetails.status === 'passed'
+                    ? globalStyles.green
+                    : globalStyles.red
+                }
+              />
+            </View>
+            <Text style={styles.modalStatus}>
+              You {selectedUserDetails.status} the quiz!
+            </Text>
+            <Text style={styles.modalScore}>
+              Score {score} / {quizQuestions.length}
+            </Text>
+            <Pressable
+              style={styles.modalButton}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                navigation.dispatch(popAction);
+              }}>
+              <Text style={styles.modalButtonText}>OK</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -153,6 +197,54 @@ const styles = StyleSheet.create({
   },
   nextButtonText: {
     color: globalStyles.white,
+    textAlign: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    width: 350,
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalScore: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalButton: {
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: globalStyles.darkPurple,
+    display: 'flex',
+    width: 100,
+  },
+  modalButtonText: {
+    color: globalStyles.white,
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  modalStatus: {
+    fontSize: 26,
+    marginBottom: 15,
+    color: globalStyles.darkPurple,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
     textAlign: 'center',
   },
 });
