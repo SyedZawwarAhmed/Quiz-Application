@@ -48,8 +48,14 @@ export default function Question({
   );
 
   const [score, setScore] = useState(0);
+  const incrementScore = () => {
+    if (selectedOption === answer) {
+      setScore(score + 1);
+    }
+  };
 
   const onFinish = () => {
+    incrementScore();
     dispatch(updateUserScore({userId: selectedUser.userId, score}));
     const percentage = (score / numberOfQuestions) * 100;
     if (percentage >= 70) {
@@ -91,9 +97,7 @@ export default function Question({
         <TouchableOpacity
           style={styles.nextButton}
           onPress={() => {
-            if (selectedOption === answer) {
-              setScore(score + 1);
-            }
+            incrementScore();
             onNextQuestion();
           }}>
           <Text style={styles.nextButtonText}>Next Question</Text>
@@ -225,6 +229,7 @@ const styles = StyleSheet.create({
   modalScore: {
     marginBottom: 15,
     textAlign: 'center',
+    color: globalStyles.purple,
   },
   modalButton: {
     borderRadius: 10,
