@@ -85,10 +85,10 @@ export default function Quiz(props: any) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, numberOfQuestions, selectedUser.userId, score]);
 
-  const [timer, setTimer] = useState(5);
+  const [timer, setTimer] = useState(60);
 
   const reset = () => {
-    setTimer(5);
+    setTimer(60);
   };
 
   const start = useCallback(() => {
@@ -102,7 +102,6 @@ export default function Quiz(props: any) {
   }, []);
 
   const interval = useCallback(() => {
-    //assign interval ref here
     intervalRef.current = setInterval(() => {
       start();
     }, 1000);
