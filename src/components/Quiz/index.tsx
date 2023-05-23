@@ -46,7 +46,6 @@ export default function Quiz(props: any) {
     return quizQuestionsShuffled.length;
   }, [quizQuestionsShuffled]);
   const currentQuestion = quizQuestionsShuffled[questionNumber];
-  // console.log('currentQuestion', currentQuestion);
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -86,18 +85,17 @@ export default function Quiz(props: any) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, numberOfQuestions, selectedUser.userId, score]);
 
-  const [timer, setTimer] = useState(60);
-  console.log(timer);
+  const [timer, setTimer] = useState(5);
 
   const reset = () => {
-    setTimer(60);
+    setTimer(5);
   };
 
   const start = useCallback(() => {
     setTimer(prev => {
-      if (prev === 0) {
+      if (prev === -1) {
         stop();
-        return 0;
+        return -1;
       }
       return prev - 1;
     });
@@ -111,8 +109,6 @@ export default function Quiz(props: any) {
   }, [start]);
 
   const stop = () => {
-    //clear the interval ref
-    console.log('stop function called');
     clearInterval(intervalRef.current);
   };
 
@@ -122,7 +118,7 @@ export default function Quiz(props: any) {
     if (timer === 0 && questionNumber === numberOfQuestions - 1) {
       onFinish();
       stop();
-    } else if (timer === 0 && questionNumber < numberOfQuestions - 1) {
+    } else if (timer === -1 && questionNumber < numberOfQuestions - 1) {
       handleNext();
     }
 

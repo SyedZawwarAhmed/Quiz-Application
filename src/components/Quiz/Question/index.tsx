@@ -55,10 +55,21 @@ export default function Question({
     (user: any) => user.id === selectedUser.userId,
   );
 
+  const convertSecondsToMinutesAndSeconds = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    const formattedMinutes = ('0' + minutes).slice(-2);
+    const formattedSeconds = ('0' + remainingSeconds).slice(-2);
+
+    return formattedMinutes + ':' + formattedSeconds;
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.questionContainer}>
-        <Text style={styles.timer}>{timer}</Text>
+        <Text style={styles.timer}>
+          {convertSecondsToMinutesAndSeconds(timer)}
+        </Text>
         <Text style={styles.questionNumber}>
           Question {questionNumber} of {numberOfQuestions}
         </Text>
@@ -82,8 +93,7 @@ export default function Question({
         <TouchableOpacity
           style={styles.nextButton}
           onPress={() => handleNext()}
-          // disabled={selectedOption === ''}
-        >
+          disabled={selectedOption === ''}>
           <Text style={styles.nextButtonText}>Next Question</Text>
         </TouchableOpacity>
       ) : (
