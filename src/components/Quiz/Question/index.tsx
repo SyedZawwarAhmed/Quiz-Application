@@ -74,16 +74,19 @@ export default function Question({
           Question {questionNumber} of {numberOfQuestions}
         </Text>
         <Text style={styles.question}>{question}</Text>
-        <View>
+        <View style={styles.optionContainer}>
           {options.map((option: string) => (
             <Pressable
               key={option}
-              style={
-                selectedOption !== option
-                  ? styles.option
-                  : [styles.option, styles.selectedOption]
-              }
+              style={styles.option}
               onPress={() => setSelectedOption(option)}>
+              <View
+                style={
+                  selectedOption !== option
+                    ? styles.radioButton
+                    : [styles.radioButton, styles.selectedRadioButton]
+                }
+              />
               <Text style={styles.optionText}>{option}</Text>
             </Pressable>
           ))}
@@ -173,21 +176,33 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     paddingHorizontal: 20,
   },
-  option: {
-    backgroundColor: globalStyles.white,
-    padding: 20,
-    marginVertical: 10,
-    borderRadius: 10,
+  optionContainer: {
+    // marginLeft: 40,
   },
-  selectedOption: {
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  radioButton: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: globalStyles.white,
+    marginRight: 10,
+  },
+  selectedRadioButton: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     borderWidth: 5,
-    marginVertical: 5,
     borderColor: globalStyles.purple,
+    marginRight: 10,
   },
   optionText: {
-    color: globalStyles.darkPurple,
-    fontSize: 16,
-    textAlign: 'center',
+    color: globalStyles.white,
+    fontSize: 20,
     fontWeight: '600',
   },
   nextButton: {
