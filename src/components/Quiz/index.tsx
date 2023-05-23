@@ -55,35 +55,27 @@ export default function Quiz(props: any) {
 
   const [score, setScore] = useState(0);
   const [selectedOption, setSelectedOption] = useState('');
+
   const incrementScore = useCallback(() => {
     if (currentQuestion && selectedOption === currentQuestion.answer) {
       setScore((previousScore: number) => previousScore + 1);
     }
   }, [currentQuestion, selectedOption]);
 
-  const handleNext = useCallback(() => {
+  const handleNext = () => {
     incrementScore();
     onNextQuestion();
     setSelectedOption('');
     reset();
-  }, [incrementScore, onNextQuestion]);
+  };
 
   const intervalRef = useRef<any>(null);
 
-  const onFinish = useCallback(() => {
+  const onFinish = () => {
     stop();
     incrementScore();
-    dispatch(updateUserScore({userId: selectedUser.userId, score: score}));
-    const percentage = (score / numberOfQuestions) * 100;
-    if (percentage >= 60) {
-      dispatch(moveUserToPassed(selectedUser.userId));
-    } else {
-      dispatch(moveUserToFailed(selectedUser.userId));
-    }
-    dispatch(updateUserNumberOfAttempts(selectedUser.userId));
     setModalVisible(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, numberOfQuestions, selectedUser.userId, score]);
+  };
 
   const [timer, setTimer] = useState(60);
 
@@ -111,6 +103,17 @@ export default function Quiz(props: any) {
     clearInterval(intervalRef.current);
   };
 
+  const handleOk = () => {
+    dispatch(updateUserScore({userId: selectedUser.userId, score: score}));
+    const percentage = (score / numberOfQuestions) * 100;
+    if (percentage >= 60) {
+      dispatch(moveUserToPassed(selectedUser.userId));
+    } else {
+      dispatch(moveUserToFailed(selectedUser.userId));
+    }
+    dispatch(updateUserNumberOfAttempts(selectedUser.userId));
+  };
+
   useEffect(() => {
     interval();
 
@@ -124,15 +127,8 @@ export default function Quiz(props: any) {
     return () => {
       stop();
     };
-  }, [
-    timer,
-    onFinish,
-    handleNext,
-    questionNumber,
-    numberOfQuestions,
-    incrementScore,
-    interval,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timer, questionNumber, numberOfQuestions, interval]);
 
   return (
     <Question
@@ -153,6 +149,7 @@ export default function Quiz(props: any) {
       handleNext={handleNext}
       onFinish={onFinish}
       score={score}
+      handleOk={handleOk}
     />
   );
 }

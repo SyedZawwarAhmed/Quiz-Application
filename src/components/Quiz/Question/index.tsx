@@ -30,6 +30,7 @@ interface QuestionProps {
   handleNext: any;
   onFinish: any;
   score: number;
+  handleOk: any;
 }
 
 export default function Question({
@@ -48,6 +49,7 @@ export default function Question({
   handleNext,
   onFinish,
   score,
+  handleOk,
 }: QuestionProps) {
   const popAction = StackActions.pop(1);
 
@@ -96,7 +98,8 @@ export default function Question({
         <TouchableOpacity
           style={styles.nextButton}
           onPress={() => handleNext()}
-          disabled={selectedOption === ''}>
+          // disabled={selectedOption === ''}
+        >
           <Text style={styles.nextButtonText}>Next Question</Text>
         </TouchableOpacity>
       ) : (
@@ -140,6 +143,7 @@ export default function Question({
               style={styles.modalButton}
               onPress={() => {
                 setModalVisible(!modalVisible);
+                handleOk();
                 navigation.dispatch(popAction);
               }}>
               <Text style={styles.modalButtonText}>OK</Text>
