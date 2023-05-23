@@ -6,15 +6,8 @@ import {
   Pressable,
   Modal,
 } from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import {globalStyles} from '../../../globalStyles';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  moveUserToFailed,
-  moveUserToPassed,
-  updateUserNumberOfAttempts,
-  updateUserScore,
-} from '../../User/store/user.actions';
 import {StackActions} from '@react-navigation/native';
 import {quizQuestions} from '../questions';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -27,53 +20,45 @@ interface QuestionProps {
   numberOfQuestions: number;
   onNextQuestion: () => void;
   navigation: any;
+  timer: number;
+  users: any;
+  selectedUser: any;
+  selectedOption: string;
+  setSelectedOption: any;
+  modalVisible: boolean;
+  setModalVisible: any;
+  handleNext: any;
+  onFinish: any;
+  score: number;
 }
 
 export default function Question({
   question,
   options,
-  answer,
   questionNumber,
   numberOfQuestions,
-  onNextQuestion,
   navigation,
+  timer,
+  users,
+  selectedUser,
+  selectedOption,
+  setSelectedOption,
+  modalVisible,
+  setModalVisible,
+  handleNext,
+  onFinish,
+  score,
 }: QuestionProps) {
-  const dispatch = useDispatch();
-
   const popAction = StackActions.pop(1);
 
-  const {users, selectedUser} = useSelector((state: any) => state.users);
   const selectedUserDetails = users.find(
     (user: any) => user.id === selectedUser.userId,
   );
 
-  const [score, setScore] = useState(0);
-  const incrementScore = () => {
-    if (selectedOption === answer) {
-      setScore(score + 1);
-    }
-  };
-
-  const onFinish = () => {
-    incrementScore();
-    dispatch(updateUserScore({userId: selectedUser.userId, score}));
-    const percentage = (score / numberOfQuestions) * 100;
-    if (percentage >= 70) {
-      dispatch(moveUserToPassed(selectedUser.userId));
-    } else {
-      dispatch(moveUserToFailed(selectedUser.userId));
-    }
-    dispatch(updateUserNumberOfAttempts(selectedUser.userId));
-    setModalVisible(true);
-  };
-
-  const [selectedOption, setSelectedOption] = useState('');
-
-  const [modalVisible, setModalVisible] = useState(false);
-
   return (
     <View style={styles.container}>
       <View style={styles.questionContainer}>
+        <Text style={styles.timer}>{timer}</Text>
         <Text style={styles.questionNumber}>
           Question {questionNumber} of {numberOfQuestions}
         </Text>
@@ -96,14 +81,17 @@ export default function Question({
       {!(questionNumber === numberOfQuestions) ? (
         <TouchableOpacity
           style={styles.nextButton}
-          onPress={() => {
-            incrementScore();
-            onNextQuestion();
-          }}>
+          onPress={() => handleNext()}
+          // disabled={selectedOption === ''}
+        >
           <Text style={styles.nextButtonText}>Next Question</Text>
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity style={styles.nextButton} onPress={onFinish}>
+        <TouchableOpacity
+          style={styles.nextButton}
+          onPress={() => {
+            onFinish();
+          }}>
           <Text style={styles.nextButtonText}>Finish</Text>
         </TouchableOpacity>
       )}
@@ -252,5 +240,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  timer: {
+    color: globalStyles.white,
   },
 });
