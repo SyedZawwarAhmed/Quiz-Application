@@ -98,8 +98,7 @@ export default function Question({
         <TouchableOpacity
           style={styles.nextButton}
           onPress={() => handleNext()}
-          // disabled={selectedOption === ''}
-        >
+          disabled={selectedOption === ''}>
           <Text style={styles.nextButtonText}>Next Question</Text>
         </TouchableOpacity>
       ) : (
