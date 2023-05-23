@@ -71,9 +71,21 @@ export default function Quiz(props: any) {
 
   const intervalRef = useRef<any>(null);
 
+  const handleOk = () => {
+    dispatch(updateUserScore({userId: selectedUser.userId, score: score}));
+    const percentage = (score / numberOfQuestions) * 100;
+    if (percentage >= 60) {
+      dispatch(moveUserToPassed(selectedUser.userId));
+    } else {
+      dispatch(moveUserToFailed(selectedUser.userId));
+    }
+  };
+
   const onFinish = () => {
     stop();
     incrementScore();
+    handleOk();
+    dispatch(updateUserNumberOfAttempts(selectedUser.userId));
     setModalVisible(true);
   };
 
@@ -103,17 +115,6 @@ export default function Quiz(props: any) {
     clearInterval(intervalRef.current);
   };
 
-  const handleOk = () => {
-    dispatch(updateUserScore({userId: selectedUser.userId, score: score}));
-    const percentage = (score / numberOfQuestions) * 100;
-    if (percentage >= 60) {
-      dispatch(moveUserToPassed(selectedUser.userId));
-    } else {
-      dispatch(moveUserToFailed(selectedUser.userId));
-    }
-    dispatch(updateUserNumberOfAttempts(selectedUser.userId));
-  };
-
   useEffect(() => {
     interval();
 
@@ -129,6 +130,13 @@ export default function Quiz(props: any) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timer, questionNumber, numberOfQuestions, interval]);
+
+  useEffect(() => {
+    if (questionNumber === numberOfQuestions - 1) {
+      handleOk();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [score]);
 
   return (
     <Question
@@ -149,7 +157,6 @@ export default function Quiz(props: any) {
       handleNext={handleNext}
       onFinish={onFinish}
       score={score}
-      handleOk={handleOk}
     />
   );
 }
