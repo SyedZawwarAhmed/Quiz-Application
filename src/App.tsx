@@ -13,7 +13,7 @@ import {globalStyles} from './globalStyles';
 import Quiz from './components/Quiz';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import UserProfile from './components/User/UserProfile';
-import {BottomTabs} from './components/BottomTabs';
+import {BottomTabs} from './navigation/BottomTabs';
 
 const AppWrapper = () => {
   return (
