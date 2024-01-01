@@ -8,7 +8,6 @@ workflows:
             node: latest
         scripts:
             - npm install
-            - chmod +x gradlew
             - echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
             - |
                 # build Android
